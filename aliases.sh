@@ -1,17 +1,16 @@
 export PATH='/usr/local/go/bin:/home/alex/google-cloud-sdk/bin:/home/alex/.nvm/versions/node/v18.3.0/bin:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin/shims:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin//bin:/home/alex/.local/bin:/usr/local/bin:/usr/local/apache-maven-3.8.6/bin/:~/git/ewx-root/context/ewx-intelligence/runtimes:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin:/home/linuxbrew/.linuxbrew/bin:/home/alex/git/ewx-root/context/ewx-processing/.venv/bin:/home/alex/.nvm/versions/node/v18.3.0/bin:/home/alex/.local/bin:/usr/local/bin:/usr/local/apache-maven-3.8.6/bin:~/git/ewx-root/context/ewx-intelligence/runtimes:/home/linuxbrew/.linuxbrew/bin:/home/alex/.poetry/bin:/home/linuxbrew/.linuxbrew/bin:/home/alex/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
-
+export KUBE_EDITOR='nano'
 
 ## Intellij
 alias ij='/snap/intellij-idea-community/current/bin/idea.sh $1 &'
 
 ## Shell config
-alias als='source ~/aliases.sh ; source ~/.bashrc'
-alias lals='less ~/aliases.sh'
-alias sals='subl ~/aliases.sh'
-alias fals='cat ~/aliases.sh | grep'
-alias ga='cat ~/aliases.sh | grep'
+alias als='source ~/linux-util/aliases.sh ; source ~/.bashrc'
+alias lals='less ~/linux-util/aliases.sh'
+alias sals='subl ~/linux-util/aliases.sh'
+alias fals='cat ~/linux-util/aliases.sh | grep'
+alias ga='cat ~/linux-util/aliases.sh | grep'
 alias sbrc='subl ~/.bashrc'
-alias sfrc='subl /etc/fish/config.fish'
 
 ## Git
 alias gc='git checkout'
@@ -80,6 +79,7 @@ alias kx='kubectl exec'
 alias kxi='kubectl exec -it'
 alias ke='kubectl edit'
 alias kns='if [ $# -ne 0 ] ; then kubectl config set-context --current --namespace ; else kubectl get ns ; fi'
+alias knss='kubectl config set-context --current --namespace'
 alias kg='kubectl get'
 alias kgy='kubectl get -o yaml'
 alias kgpy='kubectl get pod -o yaml'
@@ -100,6 +100,7 @@ alias kcsc='kubectl config set-context'
 alias kgp='kubectl get pods'
 alias kgpn='kubectl get pods -n'
 alias kgpa='kubectl get pods --all-namespaces'
+alias kgpg='kubectl get pods --no-headers=true -o name $1 | grep $1'
 
 alias kdp='kubectl describe pod'
 alias kdpn='kubectl describe pod -n'
@@ -146,6 +147,7 @@ alias update-all='source /home/alex/update.sh'
 alias rmrf='rm -rf'
 alias cat='batcat'
 alias dudir='du -h --max-depth=1'
+alias cpy='xclip -i -selection clipboard'
 
 ## Other
 alias pubsub='lsof -i tcp:8085'
