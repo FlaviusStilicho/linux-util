@@ -1,5 +1,5 @@
 export PATH='/usr/local/go/bin:/home/alex/google-cloud-sdk/bin:/home/alex/.nvm/versions/node/v18.3.0/bin:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin/shims:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin//bin:/home/alex/.local/bin:/usr/local/bin:/usr/local/apache-maven-3.8.6/bin/:~/git/ewx-root/context/ewx-intelligence/runtimes:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin:/home/linuxbrew/.linuxbrew/bin:/home/alex/git/ewx-root/context/ewx-processing/.venv/bin:/home/alex/.nvm/versions/node/v18.3.0/bin:/home/alex/.local/bin:/usr/local/bin:/usr/local/apache-maven-3.8.6/bin:~/git/ewx-root/context/ewx-intelligence/runtimes:/home/linuxbrew/.linuxbrew/bin:/home/alex/.poetry/bin:/home/linuxbrew/.linuxbrew/bin:/home/alex/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
-export KUBE_EDITOR='nano'
+export KUBE_EDITOR='vi'
 
 ## Intellij
 alias ij='/snap/intellij-idea-community/current/bin/idea.sh $1 &'
@@ -101,7 +101,7 @@ alias kcsc='kubectl config set-context'
 alias kgp='kubectl get pods'
 alias kgpn='kubectl get pods -n'
 alias kgpa='kubectl get pods --all-namespaces'
-alias kgpg='kubectl get pods --no-headers=true -o name $1 | grep $1'
+alias kgpg='kubectl get pods --no-headers=true -o name | grep'
 
 alias kdp='kubectl describe pod'
 alias kdpn='kubectl describe pod -n'
@@ -204,14 +204,19 @@ alias aws-authd='aws sts decode-authorization-message --encoded-message $1'
 alias tfr='terraformer import aws --profile=nc --regions=eu-central-1 -r '
 
 ## Docker
-alias d='docker'
-alias di='docker images'
-alias dp='docker pull'
-alias dps='docker ps'
-alias dri='docker run -it --rm --entrypoint=bash'
-alias dris='docker run -it --rm --entrypoint=/bin/sh'
-alias drip='docker run -it --rm --pull=always --entrypoint=bash'
-alias drips='docker run -it --rm --pull=always --entrypoint=/bin/sh'
+alias d='sudo docker'
+alias db='sudo docker build'
+alias dbv='sudo docker build --no-cache --progress plain'
+alias di='sudo docker images'
+alias dirm='sudo docker image rm'
+alias dp='sudo docker pull'
+alias dps='sudo docker ps'
+alias dri='sudo docker run -it --rm --entrypoint=bash'
+alias drri='sudo docker run --user root -it --rm --entrypoint=bash'
+alias dris='sudo docker run -it --rm --entrypoint=/bin/sh'
+alias drris='sudo docker run --user root -it --rm --entrypoint=/bin/sh'
+alias drip='sudo docker run --user root -it --rm --pull=always --entrypoint=bash'
+alias drips='sudo docker run --user root -it --rm --pull=always --entrypoint=/bin/sh'
 
 ## ANWB
 alias cdkd='poetry run cdk deploy --require-approval=never'
@@ -232,8 +237,43 @@ function up () {
       cd ..
     done
 fi
-  
 }
+
+function kns () { 
+  if [ $# -eq 0 ] ; then
+    kubectl get ns
+  else 
+    kubectl config set-context --current --namespace $1
+  fi
+}
+
+function krmpg () { 
+  if [ $# != 1 ] ; then
+    printf '%s\n' "Please pass a single pod name" >&2
+  else 
+    kubectl delete pod $(kubectl get pods --no-headers=true -o name | grep $1 | cut -c 5- )
+  fi
+}
+
+function kgpgc () { 
+  if [ $# != 1 ] ; then
+    printf '%s\n' "Please pass a single pod name" >&2
+  else 
+    kubectl get pods --no-headers=true -o name | grep $1| cut -c 5- | xclip -i -selection clipboard
+  fi
+}
+
+function kxib () { 
+  if [ $# != 1 ] ; then
+    printf '%s\n' "Please pass a single pod name" >&2
+  else 
+    kubectl exec -it $(kubectl get pods --no-headers=true -o name | grep $1| cut -c 5- ) bash
+  fi
+}
+
+# alias kgpg='grep $1 <<< $(kubectl get pods --no-headers=true -o name) | cut -c 5- | xclip -i -selection clipboard'
+# alias krmpg='kubectl delete pod $(kubectl get pods --no-headers=true -o name | grep $1 | cut -c 5- )'
+
 function port() {
   lsof -i TCP:$1
 }
@@ -250,3 +290,4 @@ function mtg() {
   cd ~/git/mtg-react
   npm start
 }
+
