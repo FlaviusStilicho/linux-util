@@ -1,4 +1,4 @@
-export PATH='/usr/local/go/bin:/home/alex/google-cloud-sdk/bin:/home/alex/.nvm/versions/node/v18.3.0/bin:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin/shims:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin//bin:/home/alex/.local/bin:/usr/local/bin:/usr/local/apache-maven-3.8.6/bin/:~/git/ewx-root/context/ewx-intelligence/runtimes:/home/linuxbrew/.linuxbrew/Cellar/pyenv/2.1.0/bin:/home/linuxbrew/.linuxbrew/bin:/home/alex/git/ewx-root/context/ewx-processing/.venv/bin:/home/alex/.nvm/versions/node/v18.3.0/bin:/home/alex/.local/bin:/usr/local/bin:/usr/local/apache-maven-3.8.6/bin:~/git/ewx-root/context/ewx-intelligence/runtimes:/home/linuxbrew/.linuxbrew/bin:/home/alex/.poetry/bin:/home/linuxbrew/.linuxbrew/bin:/home/alex/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
+echo "loading shared aliases.."
 export KUBE_EDITOR='vi'
 
 ## Intellij
@@ -20,8 +20,10 @@ alias gf='git fetch'
 alias gs='git status'
 alias gp='git pull'
 alias gt='git tag'
+alias gcm='git commit -m'
 alias gpt='git push --tag'
-alias gpfo='git push --force'
+alias gpu='git push'
+alias gpfo='git push --force-with-lease'
 alias gtl='git tag --list'
 alias rev='git rev-parse --short HEAD | tr -d "\n" | xclip -selection c'
 alias revc='git rev-parse --short HEAD | tr -d "\n"'
@@ -146,7 +148,6 @@ alias lah='ls -alh --sort=size'
 alias running-services='systemctl list-units --type=service --state=running'
 alias update-all='source /home/alex/update.sh'
 alias rmrf='rm -rf'
-alias cat='batcat'
 alias dudir='du -h --max-depth=1'
 alias cpy='xclip -i -selection clipboard'
 
@@ -166,6 +167,7 @@ alias newvv='python3 -m venv .venv && source .venv/bin/activate'
 alias get-pip='curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10'
 alias pipr='pip install -r requirements.txt'
 alias pipadd='echo $1 >> requirements.txt'
+alias pipf='pip freeze'
 
 ## Python - Pipenv
 # alias pud='pipenv update --dev'
@@ -187,14 +189,7 @@ alias jib='mvn -Drevision=$(revc) package jib:build'
 ## AWS CLI
 alias awsconf='subl ~/.aws/config'
 alias awscred='subl ~/.aws/credentials'
-alias awsl='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; aws-mfa --profile $1'
 alias aws-default='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; aws-mfa --profile default'
-alias aws-nc='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; xclip -selection c -o | aws-mfa --profile default'
-alias aws-sb='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; xclip -selection c -o | aws-mfa --assume-role arn:aws:iam::953143183107:role/Admin'
-alias aws-cp='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; xclip -selection c -o | aws-mfa --assume-role arn:aws:iam::851211178769:role/Nordcloud-Clouduty'
-# alias aws-cpc='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; aws-mfa --profile cp-dev'
-alias aws-cpc='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; xclip -selection c -o |  aws-mfa --assume-role arn:aws:iam::312268712655:role/Nordcloud-Clouduty'
-alias aws-cpct='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c ; xclip -selection c -o |  aws-mfa --assume-role arn:aws:iam::419840412793:role/Nordcloud-Clouduty'
 
 alias mfa='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c'
 alias agci='aws sts get-caller-identity'
@@ -217,10 +212,6 @@ alias dris='sudo docker run -it --rm --entrypoint=/bin/sh'
 alias drris='sudo docker run --user root -it --rm --entrypoint=/bin/sh'
 alias drip='sudo docker run --user root -it --rm --pull=always --entrypoint=bash'
 alias drips='sudo docker run --user root -it --rm --pull=always --entrypoint=/bin/sh'
-
-## ANWB
-alias cdkd='poetry run cdk deploy --require-approval=never'
-
 
 ## Functions
 function mkd () { 
@@ -271,9 +262,6 @@ function kxib () {
   fi
 }
 
-# alias kgpg='grep $1 <<< $(kubectl get pods --no-headers=true -o name) | cut -c 5- | xclip -i -selection clipboard'
-# alias krmpg='kubectl delete pod $(kubectl get pods --no-headers=true -o name | grep $1 | cut -c 5- )'
-
 function port() {
   lsof -i TCP:$1
 }
@@ -286,8 +274,4 @@ function ec() {
   fi
 }
 
-function mtg() {
-  cd ~/git/mtg-react
-  npm start
-}
 
