@@ -204,6 +204,7 @@ alias newvv='python3 -m venv .venv && source .venv/bin/activate'
 alias get-pip='curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10'
 alias pipr='pip install -r requirements.txt'
 alias piprd='pip install -r requirements-dev.txt'
+alias pipu='pip freeze | xargs pip uninstall -y'
 alias pipadd='echo $1 >> requirements.txt'
 alias pipf='pip freeze'
 
