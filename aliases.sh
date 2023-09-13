@@ -60,6 +60,7 @@ alias gsdrop='git stash drop'
 alias gspush='git add . ; git stash push -m'
 alias gspop='git stash pop'
 alias gsapp='git stash apply'
+alias gspull='git stash push -m "TEMP" ; git pull ; git stash pop'
 
 ## Terraform
 alias tf='terraform'
