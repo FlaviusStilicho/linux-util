@@ -6,17 +6,44 @@ export HTTPS_PROXY=${http_proxy}
 export no_proxy=localhost,127.0.0.*,*.anwb.local,10.*,172.*,192.*,*.vpce.amazonaws.com
 export NO_PROXY=${no_proxy}
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+pyenv shell 3.11
+
+
 alias pc="pycharm-community"
 alias fanwb='cat ~/linux-util/anwb.sh | grep'
 alias sanwb="subl ~/linux-util/anwb.sh"
 alias al="hub aws login"
+alias all='sudo cat ~/linux-util/login.txt | expect -f -'
+alias allc='sudo cat ~/linux-util/login-choose.txt | expect -f -'
 
-alias finc="cd ~/o2c-api-finclaim ; source .venv/bin/activate"
+alias finc="cd ~/o2c-api-finclaim/o2c-api-finclaim ; source .venv/bin/activate"
+alias cfinc="cd ~/o2c-api-finclaim/o2c-api-finclaim ; source .venv/bin/activate ; code ."
+alias mfinc="cd ~/o2c-migrations/o2c-api-finclaim ; source .venv/bin/activate"
+alias mmand="cd ~/o2c-migrations//o2c-api-mandate; source .venv/bin/activate"
 alias moni="cd ~/o2c-monitoring"
+alias cmoni="cd ~/o2c-monitoring ; code ."
 alias migr="cd ~/o2c-migrations ; source .venv/bin/activate"
+alias cmigr="cd ~/o2c-migrations ; source .venv/bin/activate ; code ."
 alias orcp="cd ~/dh-pub-oracle-ebs-export-copy ; source venv/bin/activate"
+alias corcp="cd ~/dh-pub-oracle-ebs-export-copy ; source venv/bin/activate ; code ."
 alias cicd="cd ~/o2c-cicd-resources"
-alias mand="cd ~/o2c-api-mandate"
+alias ccicd="cd ~/o2c-cicd-resources ; code ."
+alias mand="cd ~/o2c-api-mandate ; source .venv/bin/activate"
+alias cmand="cd ~/o2c-api-mandate ; source .venv/bin/activate ; code ."
+alias bootst="cd ~/o2c-account-bootstrap ; code ."
+alias cbootst="cd ~/o2c-account-bootstrap ; code ."
+alias comm="cd ~/o2c-common"
+alias ccomm="cd ~/o2c-common; code ."
+alias bus="cd ~/o2c-business-event/o2c-business-event"
+alias cbus="cd ~/o2c-business-event/o2c-business-event ; source .venv/bin/activate ; code ."
+
 
 alias m="make"
 alias mf="make fix"
@@ -24,42 +51,8 @@ alias mt="make test"
 alias mtf="make testf"
 alias mac="make acc"
 alias macf="make accf"
+alias mrf="make refresh-fixtures"
+alias pipi="pip install -i https://nexus.anwbonline.nl/repository/pip-group/simple $1"
+alias ddstart='sudo service docker start'
 
-
-# export STACK_SUFFIX=abakker
-export STACK_NAME=o2c-api-finclaim
-# alias sambr='export STACK_SUFFIX=$( git rev-parse --abbrev-ref HEAD)'
-
-samdeploy(){
-    branch_name=$(git rev-parse --abbrev-ref HEAD)
-
-    export STACK_SUFFIX=$branch_name
-    if [[ -z $STACK_NAME ]]; then
-        echo "Set STACK_NAME and STACK_SUFFIX environment variables"
-    else
-        sam build --template template.yaml
-        sam validate --lint
-        exit_code=$?
-        if [[ $exit_code != 0 ]]; then
-            return $exit_code
-        fi
-        sam package --output-template-file packaged.yaml
-
-        if [[ $1 == "ns" ]] || [[ -z $STACK_SUFFIX ]] || [[ $STACK_SUFFIX == "" ]]; then
-
-            echo; echo "Using '$STACK_NAME' as stack name without a suffix" ; echo
-            read -r -p "Proceed? [y/n] " response
-            if [[ "$response" =~ ^(Y|YES|Yes|y|yes)$ ]]; then
-                sam deploy --stack-name ${STACK_NAME} --template-file packaged.yaml --on-failure DELETE    
-            fi
-
-        else
-            echo ; 
-            echo "Using '$STACK_NAME' as stack name and '$STACK_SUFFIX' as suffix" # ; echo
-            # read -r -p "Proceed? [y/n] " response
-            # if [[ "$response" =~ ^(Y|YES|Yes|y|yes)$ ]]; then
-                sam deploy --stack-name ${STACK_NAME}-${STACK_SUFFIX} --template-file packaged.yaml --parameter-overrides namesuffix=-${STACK_SUFFIX}  --on-failure ROLLBACK #--timeout-in-minutes 3
-            # fi
-        fi        
-    fi
-}
+export CDK_EXECUTABLE=/home/alex/.nvm/versions/node/v20.11.0/bin/cdk

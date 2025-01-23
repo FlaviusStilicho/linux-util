@@ -1,8 +1,10 @@
 echo "loading shared aliases.."
 export KUBE_EDITOR='vi'
 
+alias xx='exec $SHELL'
 ## Intellij
 alias ij='/snap/intellij-idea-community/current/bin/idea.sh $1 &'
+eval "$(pyenv init -)"
 
 ## Shell config
 alias als='source ~/linux-util/aliases.sh ; source ~/.bashrc'
@@ -19,6 +21,7 @@ alias gc='git checkout'
 alias gm='git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@")'
 alias gb='git checkout -b'
 alias gbd='git branch -D'
+alias gbrd='git push -d origin'
 alias gbl='git branch --list'
 alias gblr='git branch -r'
 alias gf='git fetch'
@@ -28,9 +31,10 @@ alias gp='git pull'
 alias gpm='git fetch origin main:main'
 alias gt='git tag'
 alias gl='git log'
-alias gls=' git log --pretty=format:"%C(auto)%h %Cgreen%an %Creset%s" --abbrev-commit'
+alias gls='git log --pretty=format:"%C(auto)%h %Cgreen%an %Creset%s" --abbrev-commit -10'
 alias gr='git rebase'
 alias grm='git rebase main'
+alias grms='git fetch origin main:main ; git add . ; git stash push -m ¨TEMP¨ ; git rebase main ; git stash pop'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
 alias gri='git rebase -i'
@@ -41,16 +45,21 @@ alias gcmp='git commit -m ¨$1¨ && git push'
 alias gcam='git commit -am'
 alias gcamp='git commit -am ¨$1¨ && git push'
 alias gcnm='git commit -n -m'
-alias gcnmp='git commit -n -m ¨$1¨ && git push'
+alias gcnx='git commit -n --no-edit --amend'
 alias gcanm='git commit -a -n -m'
-alias gcanmp='git commit -a -n -m ¨$1¨ && git push'
+alias gcanx='git commit -a -n --no-edit --amend'
+alias gcp='git cherry-pick $1'
+alias gcpc='git cherry-pick --continue'
 alias gcpr='git commit -c ORIG_HEAD'
 alias gcapr='git commit -a -c ORIG_HEAD'
 alias gcanpr='git commit -a -n -c ORIG_HEAD'
-alias gcpa='git commit --amend ; git push --force'
-alias gcnpa='git commit -n --amend ; git push --force'
+alias gcxp='git commit --amend --no-edit; git push --force-with-lease'
+alias gcaxp='git commit -a --amend --no-edit; git push --force-with-lease'
+alias gcnxp='git commit -n --amend --no-edit; git push --force-with-lease'
+alias gcanxp='git commit -a -n --amend --no-edit; git push --force-with-lease'
 alias gpt='git push --tag'
-alias gpu='git push'
+alias gpu='git push --set-upstream origin HEAD'
+alias gpuu='git push -u origin $(git rev-parse --abbrev-ref HEAD)'
 alias gpfo='git push --force-with-lease'
 alias gtl='git tag --list'
 alias rev='git rev-parse --short HEAD | tr -d "\n" | xclip -selection c'
@@ -66,6 +75,7 @@ alias gspush='git add . ; git stash push -m'
 alias gspop='git stash pop'
 alias gsapp='git stash apply'
 alias gspull='git stash push -m "TEMP" ; git pull ; git stash pop'
+alias git-count='git_count_func() { git log --author="$1" --pretty=tformat: --numstat | gawk "{ add += \$1; subs += \$2; loc += \$1 - \$2 } END { printf \"added lines: %s removed lines: %s total lines: %s\\n\", add, subs, loc }"; }; git_count_func'
 
 ## Terraform
 alias tf='terraform'
@@ -201,12 +211,46 @@ alias bl='black .'
 alias venv='env | grep VIRTUAL_ENV'
 alias vv='source .venv/bin/activate'
 alias newvv='python3 -m venv .venv && source .venv/bin/activate'
-alias get-pip='curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10'
-alias pipr='pip install -r requirements.txt'
-alias piprd='pip install -r requirements-dev.txt'
-alias pipu='pip freeze | xargs pip uninstall -y'
+alias get-pip='curl -sS https://bootstrap.pypa.io/get-pip.py | python'
 alias pipadd='echo $1 >> requirements.txt'
 alias pipf='pip freeze'
+alias pipfg='pip freeze | grep $1'
+
+function virtualenv_active(){
+  if [[ "$VIRTUAL_ENV" == "" ]] ; then
+    echo "Error: No virtual environment is active."
+    return 1
+  else
+    echo "Running in virtualenv $VIRTUAL_ENV"
+    return 0
+  fi
+}
+
+function pipr () {
+  if ! virtualenv_active ; then
+    return 1
+  else
+    pip install -U -r requirements.txt
+  fi
+}
+
+function piprd () {
+  if ! virtualenv_active ; then
+    return 1
+  else
+    pip install -U -r requirements-dev.txt
+  fi
+}
+
+function pipu () {
+  if ! virtualenv_active ; then
+    return 1
+  else
+    pip install -U -r requirements-dev.txt
+  fi
+}
+
+
 
 ## Python - Pipenv
 # alias pud='pipenv update --dev'
@@ -235,6 +279,7 @@ alias aws-default='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -select
 
 alias mfa='oathtool -b --totp $(sudo cat ~/.aws/mfa.txt) | xclip -selection c'
 alias agci='aws sts get-caller-identity'
+alias acrm='rm ~/.aws/credentials'
 alias aws-authd='aws sts decode-authorization-message --encoded-message $1'
 
 ## Terraformer
